@@ -61,7 +61,7 @@ library(shiny)
         return(
           list(
             h5("Welcome to Shiny Survey Tool!"),
-            h6("by Francis Smart")
+            h6("by Olalla")
           )
         )
       
