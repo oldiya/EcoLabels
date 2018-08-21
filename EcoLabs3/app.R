@@ -1,80 +1,41 @@
-#####################################
-# Title: EcoLabels questionnaire
-# Date: 19/06/2018
-# Author: Olalla Díaz-Yáñez
-#####################################
+  
+# 
 
-# Setting up a shiny app
-
-# Global section 
-
-  fieldsMandatory <- c("name", "surname", "institution_type", "r_num_years")
-  
-  labelMandatory <- function(label) {
-    tagList(
-      label,
-      span("*", class = "mandatory_star")
-    )
-  }
-  
-  appCSS <-
-    ".mandatory_star { color: red; }
-    #error { color: red; }"
-  
-  humanTime <- function() format(Sys.time(), "%Y%m%d-%H%M%OS") # defines a friendly time
-  
-  
-  # Select questions to be saved 
-  fieldsAll <- c("name", "surname", "institution_type")
-  responsesDir <- file.path("Responses")
-  epochTime <- function() {
-    as.integer(Sys.time())
-  }
-  
-  # Shiny app 
-  
   shinyApp(
     ui = fluidPage(
       shinyjs::useShinyjs(),
       shinyjs::inlineCSS(appCSS),
-      titlePanel("AHP Ecolabels"),
       
-      div(
-        id = "form",
-        
-        textInput("name", labelMandatory("Name"), ""),
-        textInput("surname", labelMandatory("Surname")),
-        #checkboxInput("used_shiny", "I've built a Shiny app in R before", FALSE),
-        selectInput("institution_type", "Institution where you work / study",
-                    c("",  "UEF", "EFI", "Systembolaget", "other")),
-        textInput("otherinst", "If other, please specify the institution name here"),
-        
+      # Application title
+      headerPanel("AHP Ecolabels"),
+      
+      sidebarPanel(
+        # This is intentionally an empty object.
+        h6(textOutput("save.results")),
+        h5("Created by:"),
+        tags$a("Econometrics by Simulation", 
+               href="http://www.econometricsbysimulation.com"),
+        h5("For details on how data is generated:"),
+        tags$a("Blog Post", 
+               href=paste0("http://www.econometricsbysimulation.com/",
+                           "2013/19/Shiny-Survey-Tool.html")),
+        h5("Github Repository:"),
+        tags$a("Survey-Tool", 
+               href=paste0("https://github.com/EconometricsBySimulation/",
+                           "Shiny-Demos/tree/master/Survey")),
+        # Display the page counter text.
+        h5(textOutput("counter"))
+      ),
+      
+      # Show a table summarizing the values entered
+      mainPanel(
         shinyWidgets::sliderTextInput(inputId = "decade", 
                                       label = "Time (decade):", 
                                       choices = c(5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5), 
-                                      selected = 0),
+                                      selected = 0)
         
-        
-        
-        actionButton("submit", "Submit", class = "btn-primary"),
-        
-        #“Submitting…” progress message and an error message
-        shinyjs::hidden(
-          span(id = "submit_msg", "Submitting..."),
-          div(id = "error",
-              div(br(), tags$b("Error: "), span(id = "error_msg"))))
-      ),
-      
-      # Thank you message after submission
-      shinyjs::hidden(
-        div(
-          id = "thankyou_msg",
-          h3("Thanks, your response was submitted successfully!"),
-          actionLink("submit_another", "Submit another response")
-        )
-      ) 
-      
-    ),
+      )),
+                  
     server = function(input, output, session) {
       observe({
         mandatoryFilled <-
@@ -143,3 +104,4 @@
       
     }
   )
+  
